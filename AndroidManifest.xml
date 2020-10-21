@@ -37,6 +37,7 @@
         android:label="@string/snapcam_app_name"
         android:largeHeap="true"
         android:logo="@mipmap/ic_launcher_camera"
+        android:requestLegacyExternalStorage="true"
         android:restoreAnyVersion="true"
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
