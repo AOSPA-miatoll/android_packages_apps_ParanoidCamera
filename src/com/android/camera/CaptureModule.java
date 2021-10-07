@@ -1335,7 +1335,7 @@ public class CaptureModule implements CameraModule, PhotoController,
             processCaptureResult(result);
             mPostProcessor.onMetaAvailable(result);
             if (statsParametersUpdated <= STATS_PARAMETER_UPDATE) {
-                //updateStatsParameters(result);
+                updateStatsParameters(result);
             }
             String stats_visualizer = mSettingsManager.getValue(
                     SettingsManager.KEY_STATS_VISUALIZER_VALUE);
@@ -3782,7 +3782,7 @@ public class CaptureModule implements CameraModule, PhotoController,
             //apply swmfnr and aide param
             try {
                 captureBuilder.set(CaptureModule.isSWMFEnabled, (byte)(isSwMfnrEnabled() ? 0x01 : 0x00));
-                captureBuilder.set(CaptureModule.isAIDEEnabled, (byte)(isAIDEEnabled() && mAideAECLuxIndex >= 320 ? 0x01 : 0x00));
+                captureBuilder.set(CaptureModule.isAIDEEnabled, (byte)(isAIDEEnabled() && mAideAECLuxIndex >= lux_index_threadhold ? 0x01 : 0x00));
             } catch (IllegalArgumentException e) {
                 Log.i(TAG,"can not read swmfnr enable or aide enable tag");
             }
@@ -11729,7 +11729,7 @@ public class CaptureModule implements CameraModule, PhotoController,
     }
 
     private void cancelTouchFocus(int id) {
-        if(mPaused)
+        if(mPaused || isTakingPicture())
             return;
         if (DEBUG) {
             Log.v(TAG, "cancelTouchFocus " + id);
