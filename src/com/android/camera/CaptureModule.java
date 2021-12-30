@@ -67,7 +67,6 @@ import android.media.ImageReader;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaRecorder;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecInfo.CodecCapabilities;
 import android.media.MediaCodecInfo.VideoCapabilities;
@@ -4368,7 +4367,7 @@ public class CaptureModule implements CameraModule, PhotoController,
                         aideV2Args.getInputFrameDim(), aideV2Args.getdownFrameDim(), 100000, 100, aideV2Args.getdenoiseStrengthParam(), aideV2Args.getadrcGain(), aideV2Args.getrGain(), aideV2Args.getbGain(), aideV2Args.getgGain(), Integer.parseInt(format), Integer.parseInt(mode));
                 if (TRACE_DEBUG) Trace.endSection();
                 if (TRACE_DEBUG) Trace.beginSection("save jpeg for aide2");
-                byte[] srcImage = mActivity.getAIDenoiserService().generateAideV2Image(mActivity, aideV2Args.getorientation(), aideV2Args.getpictureSize(), aideV2Args.getcropRegion(), aideV2Args.getcaptureResult(), aideV2Args.getquality());
+                byte[] srcImage = mActivity.getAIDenoiserService().generateAideV2Image(mActivity, aideV2Args.getorientation(), aideV2Args.getpictureSize(), aideV2Args.getcropRegion(), aideV2Args.getcaptureResult(), aideV2Args.getquality(), Integer.parseInt(format));
                 mActivity.getMediaSaveService().addImage(
                         srcImage, aideV2Args.gettitle(), 0L, null,
                         aideV2Args.getpictureSize().getWidth(),
@@ -9232,7 +9231,7 @@ public class CaptureModule implements CameraModule, PhotoController,
                 if (profile != null) {
                     MediaRecorder recorder = new MediaRecorder();
                     recorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    recorder.setAudioSource(PersistUtil.getAudioSource());
                     recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
                     String fileName = generatePhysicalVideoFilename(
                             MediaRecorder.OutputFormat.MPEG_4, Integer.valueOf((String) idsArray[i]));
@@ -9952,7 +9951,7 @@ public class CaptureModule implements CameraModule, PhotoController,
                         .setSampleRate(mProfile.audioSampleRate)
                         .setEncoding(mAudioFormatNumber)
                         .build())
-                .setAudioSource(MediaRecorder.AudioSource.MIC)
+                .setAudioSource(PersistUtil.getAudioSource())
                 .setBufferSizeInBytes(mAudioBufferSize*2)
                 .build();
         mAudioRecord.startRecording();
@@ -10078,7 +10077,7 @@ public class CaptureModule implements CameraModule, PhotoController,
         }
         mProfile.videoCodec = videoEncoder;
         if (!mCaptureTimeLapse && !hfr && !mSuperSlomoCapture && (-1 != audioEncoder)) {
-            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mMediaRecorder.setAudioSource(PersistUtil.getAudioSource());
             mProfile.audioCodec = audioEncoder;
             if (mProfile.audioCodec == MediaRecorder.AudioEncoder.AMR_NB) {
                 mProfile.fileFormat = MediaRecorder.OutputFormat.THREE_GPP;
